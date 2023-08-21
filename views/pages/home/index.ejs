@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../etc/head.ejs') %>
+  <body>
+    <main>
+      <div class="sidebar">
+        <div class="logo">
+          <span>ASDOK</span>
+        </div>
+        <span class="m-3 text-small">Langkah</span>
+        <div class="side-item d-flex align-items-center" id="step-1">
+          <i class="ri-home-smile-fill me-1 text-secondary"></i>
+          <a href="#" class="text-decoration-none text-secondary"> Keluhan</a>
+          <img
+            class="img-fluid ms-auto d-none"
+            width="20"
+            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+            alt=""
+            id="step1-load"
+          />
+          <i class="ri-check-double-line ms-auto d-none" id="step1-cek"></i>
+        </div>
+        <div class="side-item d-flex align-items-center" id="step-2">
+          <i class="ri-user-smile-fill me-1 text-secondary"></i>
+          <a href="#" class="text-decoration-none text-secondary">
+            Konsultasi</a
+          >
+          <img
+            class="img-fluid ms-auto d-none"
+            width="20"
+            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+            alt=""
+            id="step2-load"
+          />
+          <i class="ri-check-double-line ms-auto d-none" id="step2-cek"></i>
+        </div>
+        <div class="side-item d-flex align-items-center" id="step-3">
+          <i class="ri-user-4-fill me-1 text-secondary"></i>
+          <a href="#" class="text-decoration-none text-secondary"
+            >Rekom Dokter</a
+          >
+          <img
+            class="img-fluid ms-auto d-none"
+            width="20"
+            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+            alt=""
+            id="step3-load"
+          />
+          <i class="ri-check-double-line ms-auto d-none" id="step3-cek"></i>
+          <!-- <img  class="img-fluid ms-auto" width="20" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911" alt=""> -->
+        </div>
+      </div>
+      <div class="content">
+        <div class="chat-area" id="chat-area">
+          <!-- <div class="client-chat d-flex">
+            <img
+              class="img-fluid me-3"
+              src="https://chat.openai.com/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtfkrIxMYGzP-1TR8RkewwoZtxiaLcC_FNKy2IOhD_e9-40%3Ds96-c&w=48&q=75"
+              width="30"
+              alt=""
+            />
+            <span>Sakit kepala dan mual</span>
+          </div> -->
+        </div>
+        <div class="text-center" id="btn-start">
+          <div class="btn btn-success" onclick="stepChange(0)">START</div>
+        </div>
+        <div class="text-center d-none" id="load-input">
+          <img
+            class="img-fluid ms-autoS"
+            width="20"
+            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+            alt=""
+            id="step3-load"
+          />
+        </div>
+        <div class="chat-input d-none">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Masukkan jawaban"
+              aria-label="Masukkan jawaban"
+              aria-describedby="button-addon2"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="button-addon2"
+              onclick="userInput()"
+            >
+              <i class="ri-send-plane-2-fill"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const asdok = (msg) => {
+        var chat = `
+          <div class="asdok-chat d-flex">
+            <img
+              class="img-fluid me-3"
+              src="https://static.vecteezy.com/system/resources/previews/021/059/827/original/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+              width="30"
+              alt=""
+            />
+            <span>${msg}</span>
+          </div> `;
+
+        return chat;
+      };
+      const client = (msg) => {
+        var chat = `
+          <div class="client-chat d-flex">
+            <img
+              class="img-fluid me-3"
+              src="https://chat.openai.com/_next/image?url=https%3A%2F%2Flh3.googleusercontent.com%2Fa%2FAAcHTtfkrIxMYGzP-1TR8RkewwoZtxiaLcC_FNKy2IOhD_e9-40%3Ds96-c&w=48&q=75"
+              width="30"
+              alt=""
+            />
+            <span>${msg}</span>
+          </div> `;
+
+        return chat;
+      };
+
+      function chattMsg(user, msg) {
+        if (user == "asdok") {
+          document.getElementById("chat-area").innerHTML += asdok(msg);
+          var element = document.querySelector(".chat-area");
+          element.scrollTop = element.scrollHeight + 50;
+        } else {
+          document.getElementById("chat-area").innerHTML += client(msg);
+          var element = document.querySelector(".chat-area");
+          element.scrollTop = element.scrollHeight + 50;
+        }
+      }
+
+      var element = document.querySelector(".chat-area");
+      element.scrollTop = element.scrollHeight;
+
+      var steps = 0;
+
+      async function stepChange(step) {
+        if (step == 1) {
+          document.getElementById("step1-load").classList.remove("d-none");
+          steps = 1;
+        } else if (step == 2) {
+          document.getElementById("step1-load").classList.add("d-none");
+          document.getElementById("step1-cek").classList.remove("d-none");
+          document.getElementById("step2-load").classList.remove("d-none");
+          steps = 2;
+        } else if (step == 3) {
+          document.getElementById("step2-load").classList.add("d-none");
+          document.getElementById("step2-cek").classList.remove("d-none");
+          document.getElementById("step3-load").classList.remove("d-none");
+          steps = 3;
+        } else if (step == 4) {
+          document.getElementById("step3-load").classList.add("d-none");
+          document.getElementById("step3-cek").classList.remove("d-none");
+          document.querySelector(".chat-input").classList.add("d-none");
+          steps = 4;
+        } else if (step == 0) {
+          document.querySelector(".chat-input").classList.remove("d-none");
+          document.querySelector("#btn-start").classList.add("d-none");
+          this.stepChange(1);
+          chattMsg("asdok", "Apa gejala yang anda rasakan?");
+        }
+      }
+
+      var question = [];
+      var Qstep = 1;
+      var rekap = [];
+
+      document
+        .querySelector(".chat-input > div > input")
+        .addEventListener("keypress", function (event) {
+          // If the user presses the "Enter" key on the keyboard
+          if (event.key === "Enter") {
+            userInput();
+          }
+        });
+
+      function userInput() {
+        var msg = document.querySelector(".chat-input > div > input").value;
+        document.querySelector("#load-input").classList.remove("d-none");
+        document.querySelector(".chat-input").classList.add("d-none");
+        if (steps == 1) {
+          chattMsg("client", msg);
+          let data = {
+            q: msg,
+          };
+          fetch("/ask", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(data),
+          })
+            .then((res) => res.json())
+            .then((hasil) => {
+              question = hasil.q;
+              stepChange(2);
+              chattMsg("asdok", question[0]);
+              document.querySelector(".chat-input > div > input").value = "";
+              document.querySelector("#load-input").classList.add("d-none");
+              document.querySelector(".chat-input").classList.remove("d-none");
+            });
+        } else if (steps == 2) {
+          chattMsg("client", msg);
+          rekap.push({ asdok: question[Qstep - 1], client: msg });
+          console.log(JSON.stringify(rekap));
+          if (Qstep < question.length) {
+            chattMsg("asdok", question[Qstep]);
+            Qstep += 1;
+            document.querySelector(".chat-input > div > input").value = "";
+            document.querySelector("#load-input").classList.add("d-none");
+            document.querySelector(".chat-input").classList.remove("d-none");
+          } else {
+            fetch("/rekom", {
+              method: "POST",
+              mode: "cors",
+              cache: "no-cache",
+              credentials: "same-origin",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              redirect: "follow",
+              referrerPolicy: "no-referrer",
+              body: JSON.stringify(rekap),
+            })
+              .then((res) => res.json())
+              .then((hasil) => {
+                stepChange(3);
+                chattMsg("asdok", hasil.msg);
+                document.querySelector(".chat-input > div > input").value = "";
+                document.querySelector("#load-input").classList.add("d-none");
+                document
+                  .querySelector(".chat-input")
+                  .classList.remove("d-none");
+
+                fetch(`/dokter`, {
+                  method: "POST",
+                  mode: "cors",
+                  cache: "no-cache",
+                  credentials: "same-origin",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  redirect: "follow",
+                  referrerPolicy: "no-referrer",
+                  body: JSON.stringify({ sp: hasil.dokter.join() }),
+                })
+                  .then((res) => res.json())
+                  .then(async (hasil) => {
+                    stepChange(4);
+                    console.log(hasil);
+
+                    document.getElementById(
+                      "chat-area"
+                    ).innerHTML += `<div class="asdok-chat d-flex">
+                      <img
+                        class="img-fluid me-3"
+                        src="https://static.vecteezy.com/system/resources/previews/021/059/827/original/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+                        width="30"
+                        alt=""
+                      />
+                      <div class="chat-content w-100">
+                        <span>Rekomendasi Dokter :</span>
+                        <div class="row" id="dokter-area">
+                          </div>
+                          </div>
+                          </div>
+                          `;
+
+                    hasil.dokter.map((dok) => {
+                      document.getElementById(
+                        "dokter-area"
+                      ).innerHTML += `<div class="col-4 mt-3">
+                            <div class="card">
+                              <div class="card-body d-flex align-items-center">
+                                <img
+                                  class="img-fluid me-3"
+                                  src="https://static.vecteezy.com/system/resources/previews/021/059/827/original/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+                                  width="30"
+                                  alt=""
+                                />
+                                <div class="bio">
+                                  <span>Dr. ${dok.nama}</span>
+                                  <p class="text-small m-0">Dokter Spesalis ${dok.spesialis}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>`;
+                    });
+                    var element = document.querySelector(".chat-area");
+                    element.scrollTop = element.scrollHeight + 50;
+                  });
+              });
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

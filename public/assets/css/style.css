@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    background-color: #343541;
+    color: #fff;
+}
+
+main{
+    display: flex;
+}
+
+.sidebar{
+    background-color: #212123;
+    height: 100vh;
+    width: 15%;
+}
+
+.content{
+    height: 100vh;
+    width: 100%;
+}
+
+.logo{
+    text-align: center;
+    padding: 40px 0;
+    font-weight: 500;
+    font-size: 25px;
+}
+
+.chat-input{
+    display: flex;
+    width: 100%;
+    height: 10vh;
+    align-items: center;
+    justify-content: center;
+}
+.chat-input .input-group{
+    width: 50%;
+    font-size: 10px;
+    padding: 10px;
+    border: none;
+}
+
+.chat-input .input-group button{
+    border: none;
+    background-color: #40414F;
+
+}
+
+.chat-input .input-group input{
+    font-size: 12px;
+    padding: 10px;
+    background-color: #40414F;
+    border: none;
+    color: white;
+}
+
+.chat-input .input-group input::placeholder{
+    color: rgb(177, 177, 177);
+}
+
+.chat-area{
+    height: 90vh;
+    overflow-y: scroll;
+}
+
+.asdok-chat{
+    background-color: #40414F;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 40px 18%;
+    align-items: start;
+}
+
+.side-item a{
+    font-size: 14px;
+    font-weight: 300;
+}
+.side-item i{
+    font-size: 20px;
+}
+.side-item{
+    padding: 5px 30px;
+
+}
+
+.text-small{
+    font-size: 13px;
+    font-weight: 300;
+    color: #8f8f90;
+}
+
+.client-chat{
+    font-size: 14px;
+    font-weight: 300;
+    padding: 40px 18%;
+    align-items: start;
+}
