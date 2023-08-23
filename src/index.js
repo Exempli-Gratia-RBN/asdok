@@ -1,7 +1,16 @@
+const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const express = require("express");
 const http = require("http");
+const jwt = require("jsonwebtoken");
 const { Configuration, OpenAIApi } = require("openai");
+
+const { PatientModel } = require("./api/model/patient.model.js");
+const { ChatModel } = require("./api/model/chat.model.js");
+
+require("dotenv").config();
+require("./api/config/db.js").connect();
 
 const configuration = new Configuration({
   apiKey: "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",
@@ -11,9 +20,10 @@ const openai = new OpenAIApi(configuration);
 const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.set("view engine", "ejs");
-app.use(express.static("public"));
+app.use(express.static("./public"));
 
 let spesialis = [
   "penyakit dalam",
@@ -47,6 +57,42 @@ let spesialis = [
   "geriatri",
 ];
 
+app.use((req, res, next) => {
+  let url = req.originalUrl;
+  let token = req.cookies.token;
+  if (!token) {
+    if (url == "/login") {
+      next();
+      return;
+    }
+    res.sendStatus(401);
+    return;
+  }
+  jwt.verify(token, process.env.JWT_SECRET, async (err, r) => {
+    try {
+      if (err || !r) {
+        res.clearCookie("token");
+        res.redirect("/login");
+        return;
+      }
+      if (url == "/login") {
+        res.redirect("/");
+        return;
+      }
+      let patient = await PatientModel.findOne(
+        { nik: r.nik },
+        "-password"
+      ).lean();
+      req.patient = patient;
+      next();
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(401);
+      return;
+    }
+  });
+});
+
 app.get("/", async (req, res) => {
   res.render("pages/home");
 });
@@ -66,9 +112,7 @@ app.post("/ask", async (req, res) => {
       },
     ],
   });
-  console.log(`~~~\n
-  ${completion.data.choices[0].message.content}\n
-  ~~~`);
+  console.log(`~~~\n${completion.data.choices[0].message.content}\n~~~`);
   let qs = completion.data.choices[0].message.content
     .split("\n")
     .map((v) => {
@@ -84,6 +128,11 @@ app.post("/ask", async (req, res) => {
 
 app.post("/rekom", async (req, res) => {
   let rekap = req.body;
+  let chat = new ChatModel({
+    patient_id: req.patient._id,
+    content: rekap,
+  });
+  await chat.save();
   let keluhan = "";
   rekap.map((v) => {
     keluhan += `${v.asdok} ${v.client}, `;
@@ -108,6 +157,7 @@ app.post("/rekom", async (req, res) => {
   res.json({
     msg: completion.data.choices[0].message.content,
     dokter: dokter,
+    chat_id: chat._id,
   });
 });
 
@@ -154,13 +204,45 @@ app.post("/dokter", async (req, res) => {
         avail.push(v);
       }
     });
+    await ChatModel.findByIdAndUpdate(
+      req.body.chat_id,
+      { doctors: avail },
+      { new: true }
+    );
     res.json({
       dokter: avail,
     });
   }
 });
 
-app.post("/login", async (req, res) => {});
+app.post("/login", async (req, res) => {
+  try {
+    const { nik, password } = req.body;
+    let patient = await PatientModel.findOne({ nik: nik });
+    if (patient) {
+      let match = await bcrypt.compare(password, patient.password);
+      console.log(match);
+      if (match) {
+        let token = jwt.sign({ nik: patient.nik }, process.env.JWT_SECRET, {
+          expiresIn: 86400,
+        });
+        res.cookie("token", token, { maxAge: 86400000 });
+        res.status(200).json({ msg: "Login berhasil" });
+        return;
+      } else {
+        res.status(400).json({ msg: "Login gagal" });
+        return;
+      }
+    } else {
+      res.status(400).json({ msg: "Login gagal" });
+      return;
+    }
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).json(err.message);
+    return;
+  }
+});
 
 const server = http.createServer(app);
 server.listen(5000);

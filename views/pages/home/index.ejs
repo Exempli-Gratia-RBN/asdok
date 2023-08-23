@@ -193,6 +193,7 @@
         document.querySelector(".chat-input").classList.add("d-none");
         if (steps == 1) {
           chattMsg("client", msg);
+          rekap.push({ asdok: "Apa gejala yang anda rasakan?", client: msg });
           let data = {
             q: msg,
           };
@@ -260,13 +261,14 @@
                   },
                   redirect: "follow",
                   referrerPolicy: "no-referrer",
-                  body: JSON.stringify({ sp: hasil.dokter.join() }),
+                  body: JSON.stringify({
+                    sp: hasil.dokter.join(),
+                    chat_id: hasil.chat_id,
+                  }),
                 })
                   .then((res) => res.json())
                   .then(async (hasil) => {
                     stepChange(4);
-                    console.log(hasil);
-
                     document.getElementById(
                       "chat-area"
                     ).innerHTML += `<div class="asdok-chat d-flex">
@@ -310,6 +312,7 @@
               });
           }
         }
+        console.log(rekap);
       }
     </script>
   </body>
