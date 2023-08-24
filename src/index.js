@@ -65,7 +65,7 @@ app.use((req, res, next) => {
       next();
       return;
     }
-    res.sendStatus(401);
+    res.redirect("/login");
     return;
   }
   jwt.verify(token, process.env.JWT_SECRET, async (err, r) => {
@@ -217,11 +217,10 @@ app.post("/dokter", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    const { nik, password } = req.body;
+    const { nik, password, remember } = req.body;
     let patient = await PatientModel.findOne({ nik: nik });
     if (patient) {
       let match = await bcrypt.compare(password, patient.password);
-      console.log(match);
       if (match) {
         let token = jwt.sign({ nik: patient.nik }, process.env.JWT_SECRET, {
           expiresIn: 86400,
@@ -242,6 +241,17 @@ app.post("/login", async (req, res) => {
     res.status(500).json(err.message);
     return;
   }
+});
+
+app.get("/logout", async (req, res) => {
+  res.clearCookie("token");
+  res.redirect("/login");
+});
+
+app.use((err, req, res, next) => {
+  console.log(err.stack);
+  res.status(500).send("Ruksak eung");
+  return;
 });
 
 const server = http.createServer(app);
