@@ -7,7 +7,7 @@ const ChatSchema = new mongoose.Schema(
       default: null,
     },
     content: {
-      type: Array,
+      type: Object,
       required: true,
     },
     doctors: {

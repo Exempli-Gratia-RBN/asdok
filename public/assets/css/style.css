@@ -4,6 +4,21 @@
   --main-color: #343541;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 1px rgba(200, 200, 200, 1);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--main-color);
+  -webkit-box-shadow: inset 0 0 1px rgba(90, 90, 90, 0.7);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -12,8 +27,9 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  background-color: #343541;
+  background-color: var(--main-color);
   color: #fff;
+  overflow-y: hidden;
 }
 
 main {
@@ -33,9 +49,13 @@ main {
 
 .logo {
   text-align: center;
-  padding: 40px 0;
+  padding: 40px 0 0 0;
   font-weight: 500;
   font-size: 25px;
+}
+
+.langkah {
+  margin: 20px 0 0 20px;
 }
 
 .chat-input {
@@ -66,6 +86,18 @@ main {
 }
 
 .chat-input .input-group input::placeholder {
+  color: rgb(177, 177, 177);
+}
+
+.dark-input input {
+  font-size: 12px;
+  padding: 10px;
+  background-color: #40414f;
+  border: none;
+  color: white;
+}
+
+.dark-input input::placeholder {
   color: rgb(177, 177, 177);
 }
 
@@ -121,12 +153,43 @@ button:focus {
   border-color: var(--main-color) !important;
 }
 
-.card,
-.btn,
-input {
-  border-radius: 0 !important;
+.center {
+  margin-top: 25vh;
 }
 
-.center {
-  margin-top: 150px;
+.login input {
+  background-color: #313132;
+  border: none;
+  color: #fff;
+  font-size: 12px;
+  padding: 15px;
+}
+
+.login label {
+  font-size: 14px;
+}
+
+.login input::placeholder {
+  color: #8f8f90;
+}
+
+.bg-dark1 {
+  background-color: #212123;
+}
+
+.login {
+  padding: 40px 20px;
+}
+
+.chat-history {
+  background-color: #2b2b2b;
+  border-radius: 0px !important;
+}
+
+.chat-history:hover {
+  border-color: #8f8f90;
+}
+
+.history-chat {
+  height: 350px;
 }

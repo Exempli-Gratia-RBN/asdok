@@ -3,55 +3,82 @@
   <%- include('../etc/head.ejs') %>
   <body>
     <main>
-      <div class="sidebar">
-        <div class="logo">
-          <span>ASDOK</span>
+      <div class="sidebar d-flex flex-column justify-content-between">
+        <div class="top d-flex flex-column gap-3">
+          <div class="logo">
+            <span>ASDOK</span>
+          </div>
+          <span class="langkah text-small">Langkah</span>
+          <div class="side-item d-flex align-items-center" id="step-1">
+            <i class="ri-home-smile-fill me-1 text-secondary"></i>
+            <a href="#" class="text-decoration-none text-secondary"> Keluhan</a>
+            <img
+              class="img-fluid ms-auto d-none"
+              width="20"
+              src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+              alt=""
+              id="step1-load"
+            />
+            <i class="ri-check-double-line ms-auto d-none" id="step1-cek"></i>
+          </div>
+          <div class="side-item d-flex align-items-center" id="step-2">
+            <i class="ri-user-smile-fill me-1 text-secondary"></i>
+            <a href="#" class="text-decoration-none text-secondary">
+              Konsultasi</a
+            >
+            <img
+              class="img-fluid ms-auto d-none"
+              width="20"
+              src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+              alt=""
+              id="step2-load"
+            />
+            <i class="ri-check-double-line ms-auto d-none" id="step2-cek"></i>
+          </div>
+          <div class="side-item d-flex align-items-center" id="step-3">
+            <i class="ri-user-4-fill me-1 text-secondary"></i>
+            <a href="#" class="text-decoration-none text-secondary"
+              >Rekom Dokter</a
+            >
+            <img
+              class="img-fluid ms-auto d-none"
+              width="20"
+              src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
+              alt=""
+              id="step3-load"
+            />
+            <i class="ri-check-double-line ms-auto d-none" id="step3-cek"></i>
+            <!-- <img  class="img-fluid ms-auto" width="20" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911" alt=""> -->
+          </div>
         </div>
-        <span class="m-3 text-small">Langkah</span>
-        <div class="side-item d-flex align-items-center" id="step-1">
-          <i class="ri-home-smile-fill me-1 text-secondary"></i>
-          <a href="#" class="text-decoration-none text-secondary"> Keluhan</a>
-          <img
-            class="img-fluid ms-auto d-none"
-            width="20"
-            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
-            alt=""
-            id="step1-load"
-          />
-          <i class="ri-check-double-line ms-auto d-none" id="step1-cek"></i>
+        <div class="middle">
+          <div class="justify-content-end mt-auto p-2">
+            <p class="text-small m-2">Chat History</p>
+            <div class="overflow-y-auto p-3" style="height: 350px">
+              <% chats.forEach((v) => { %>
+              <div
+                class="card chat-history mt-2"
+                onclick="dataPasien('<%= chats.nama %>', '<%= JSON.stringify(v.content.result) %>', '<%= JSON.stringify(v.doctors) %>')"
+              >
+                <div class="card-body text-center">
+                  <span class="text-small"
+                    ><%= new Date(v.createdAt).toLocaleDateString("id-ID",
+                    {year: 'numeric', month: 'long', day: 'numeric'}) %></span
+                  >
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
         </div>
-        <div class="side-item d-flex align-items-center" id="step-2">
-          <i class="ri-user-smile-fill me-1 text-secondary"></i>
-          <a href="#" class="text-decoration-none text-secondary">
-            Konsultasi</a
-          >
-          <img
-            class="img-fluid ms-auto d-none"
-            width="20"
-            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
-            alt=""
-            id="step2-load"
-          />
-          <i class="ri-check-double-line ms-auto d-none" id="step2-cek"></i>
-        </div>
-        <div class="side-item d-flex align-items-center" id="step-3">
-          <i class="ri-user-4-fill me-1 text-secondary"></i>
-          <a href="#" class="text-decoration-none text-secondary"
-            >Rekom Dokter</a
-          >
-          <img
-            class="img-fluid ms-auto d-none"
-            width="20"
-            src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911"
-            alt=""
-            id="step3-load"
-          />
-          <i class="ri-check-double-line ms-auto d-none" id="step3-cek"></i>
-          <!-- <img  class="img-fluid ms-auto" width="20" src="https://upload.wikimedia.org/wikipedia/commons/a/ad/YouTube_loading_symbol_3_%28transparent%29.gif?20140201131911" alt=""> -->
+        <div class="bottom">
+          <div class="logout-btn d-flex justify-content-center mb-4">
+            <a class="btn btn-dark" href="/logout">Logout</a>
+          </div>
         </div>
       </div>
       <div class="content">
-        <div class="chat-area" id="chat-area">
+        <div class="chat-area overflow-y-auto" id="chat-area">
           <!-- <div class="client-chat d-flex">
             <img
               class="img-fluid me-3"
@@ -78,7 +105,7 @@
           <div class="input-group mb-3">
             <input
               type="text"
-              class="form-control"
+              class="form-control dark-input"
               placeholder="Masukkan jawaban"
               aria-label="Masukkan jawaban"
               aria-describedby="button-addon2"
@@ -167,6 +194,7 @@
           document.querySelector(".chat-input").classList.add("d-none");
           steps = 4;
         } else if (step == 0) {
+          document.getElementById("chat-area").innerHTML = "";
           document.querySelector(".chat-input").classList.remove("d-none");
           document.querySelector("#btn-start").classList.add("d-none");
           this.stepChange(1);
@@ -244,7 +272,7 @@
               .then((res) => res.json())
               .then((hasil) => {
                 stepChange(3);
-                chattMsg("asdok", hasil.msg);
+                chattMsg("asdok", hasil.msg.split("\n").join("<br>"));
                 document.querySelector(".chat-input > div > input").value = "";
                 document.querySelector("#load-input").classList.add("d-none");
                 document
@@ -314,6 +342,50 @@
         }
         console.log(rekap);
       }
+
+      const dataPasien = (nama, result, doctors) => {
+        doctors = JSON.parse(doctors);
+        document.getElementById("chat-area").innerHTML = "";
+        chattMsg("asdok", `Hallo ${nama}`);
+        chattMsg("asdok", result.split("\n").join("<br>"));
+        document.getElementById(
+          "chat-area"
+        ).innerHTML += `<div class="asdok-chat d-flex">
+                      <img
+                        class="img-fluid me-3"
+                        src="https://static.vecteezy.com/system/resources/previews/021/059/827/original/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+                        width="30"
+                        alt=""
+                      />
+                      <div class="chat-content w-100">
+                        <span>Rekomendasi Dokter :</span>
+                        <div class="row" id="dokter-area">
+                          </div>
+                          </div>
+                          </div>
+                          `;
+
+        doctors.map((dok) => {
+          document.getElementById(
+            "dokter-area"
+          ).innerHTML += `<div class="col-4 mt-3">
+                            <div class="card">
+                              <div class="card-body d-flex align-items-center">
+                                <img
+                                  class="img-fluid me-3"
+                                  src="https://static.vecteezy.com/system/resources/previews/021/059/827/original/chatgpt-logo-chat-gpt-icon-on-white-background-free-vector.jpg"
+                                  width="30"
+                                  alt=""
+                                />
+                                <div class="bio">
+                                  <span>Dr. ${dok.nama}</span>
+                                  <p class="text-small m-0">Dokter Spesalis ${dok.spesialis}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>`;
+        });
+      };
     </script>
   </body>
 </html>

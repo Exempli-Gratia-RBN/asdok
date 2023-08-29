@@ -8,9 +8,18 @@
         <div class="col-lg-4 col-md-6 col-sm-6">
           <div class="card bg-dark1 text-light">
             <div class="card-body login">
-              <h2 class="p-3 text-center mb-3">Login</h2>
+              <h2 class="p-3 text-center mb-3">Register</h2>
               <form onsubmit="return false" id="form">
-                <div class="mb-4 dark-input">
+                <div class="mb-4">
+                  <label for="nama" class="form-label">Nama</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="nama"
+                    placeholder="Masukan nama anda"
+                  />
+                </div>
+                <div class="mb-4">
                   <label for="username" class="form-label">NIK</label>
                   <input
                     type="text"
@@ -19,7 +28,7 @@
                     placeholder="Masukan NIK anda"
                   />
                 </div>
-                <div class="mb-4 dark-input">
+                <div class="mb-4">
                   <label for="password" class="form-label">Kata sandi</label>
                   <input
                     type="password"
@@ -30,11 +39,11 @@
                 </div>
                 <div class="d-grid">
                   <button type="submit" class="btn text-light main-bg">
-                    Login
+                    Daftar
                   </button>
                 </div>
                 <p class="m-0 mt-4 text-small text-center">
-                  Anda tidak punya akun ? <a href="/daftar">klik disini</a>
+                  Anda sudah punya akun ? <a href="/login">klik disini</a>
                 </p>
               </form>
             </div>
@@ -54,18 +63,18 @@
     ></script>
     <script>
       $("#form").on("submit", () => {
+        const nama = document.getElementById("nama").value;
         const nik = document.getElementById("nik").value;
         const password = document.getElementById("password").value;
-        const remember = $("#remember").is(":checked");
         $.ajax({
-          url: "/login",
+          url: "/daftar",
           type: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          data: JSON.stringify({ nik, password, remember }),
+          data: JSON.stringify({ nama, nik, password }),
           success: function (response) {
-            window.location = "/";
+            window.location = "/login";
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.log(jqXHR.responseJSON.msg);

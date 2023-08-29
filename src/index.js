@@ -61,7 +61,7 @@ app.use((req, res, next) => {
   let url = req.originalUrl;
   let token = req.cookies.token;
   if (!token) {
-    if (url == "/login") {
+    if (url == "/login" || url == "/daftar") {
       next();
       return;
     }
@@ -94,11 +94,17 @@ app.use((req, res, next) => {
 });
 
 app.get("/", async (req, res) => {
-  res.render("pages/home");
+  let chats = await ChatModel.find({ patient_id: req.patient._id }).lean();
+  chats.nama = req.patient.name;
+  console.log(chats[0].content.result.split("\n"));
+  res.render("pages/home", { chats });
 });
 
 app.get("/login", async (req, res) => {
   res.render("pages/login");
+});
+app.get("/daftar", async (req, res) => {
+  res.render("pages/daftar");
 });
 
 app.post("/ask", async (req, res) => {
@@ -128,11 +134,6 @@ app.post("/ask", async (req, res) => {
 
 app.post("/rekom", async (req, res) => {
   let rekap = req.body;
-  let chat = new ChatModel({
-    patient_id: req.patient._id,
-    content: rekap,
-  });
-  await chat.save();
   let keluhan = "";
   rekap.map((v) => {
     keluhan += `${v.asdok} ${v.client}, `;
@@ -147,6 +148,15 @@ app.post("/rekom", async (req, res) => {
       },
     ],
   });
+  let chat = new ChatModel({
+    patient_id: req.patient._id,
+    content: {
+      chat: rekap,
+      result: completion.data.choices[0].message.content,
+    },
+  });
+  await chat.save();
+  console.log(chat);
   let dokter = [];
   spesialis.forEach((v) => {
     if (completion.data.choices[0].message.content.toLowerCase().includes(v)) {
@@ -212,6 +222,25 @@ app.post("/dokter", async (req, res) => {
     res.json({
       dokter: avail,
     });
+  }
+});
+
+app.post("/daftar", async (req, res) => {
+  try {
+    const { nama, nik, password } = req.body;
+    let salt = await bcrypt.genSalt(10);
+    let pw = await bcrypt.hash(password, salt);
+    const patient = new PatientModel({
+      name: nama,
+      nik,
+      password: pw,
+    });
+    await patient.save();
+    return res.status(200).json(patient);
+  } catch (err) {
+    console.log(err.stack);
+    res.status(500).json(err.message);
+    return;
   }
 });
 
